@@ -25,6 +25,9 @@ struct Hydrus: Driver
     // Current volume flow from 0B3B, returned in l/h.
     add_to_map(ret_val, "volume_flow_lh", this->get_0B3B(telegram));
 
+    // Flow water temperature from 0A5A, returned in degrees C.
+    add_to_map(ret_val, "flow_temperature_c", this->get_0A5A(telegram));
+
     if (ret_val.size() > 0) {
       return ret_val;
     }
