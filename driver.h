@@ -478,7 +478,34 @@ struct Driver
       }
       return ret_val;
     };
-
+    
+    esphome::optional<double> get_0C14(std::vector<unsigned char> &telegram) {
+      esphome::optional<double> ret_val{};
+      uint32_t usage = 0;
+      size_t i = 11;
+      uint32_t total_register = 0x0C14;
+    
+      while (i + 5 < telegram.size()) {
+        uint32_t c = (((uint32_t)telegram[i + 0] << 8) |
+                      ((uint32_t)telegram[i + 1]));
+    
+        if (c == total_register) {
+          i += 2;
+          usage = bcd_2_int(telegram, i, 4);
+    
+          // VIF 0x14: resolution 0.01 m3
+          ret_val = usage / 100.0;
+    
+          ESP_LOGVV(TAG, "Found register '0C14' with '%d'->'%f'",
+                    usage, ret_val.value());
+          break;
+        }
+    
+        i++;
+      }
+    
+      return ret_val;
+    };
     esphome::optional<double> get_0C0A(std::vector<unsigned char> &telegram) {
       esphome::optional<double> ret_val{};
       uint32_t usage = 0;
